@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid()) @map("_id")
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SensorData {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  containerId    String // Identificador único del contenedor
+  location       Location? // Ubicación del contenedor
+  fillLevel      Float? // Nivel de llenado en porcentaje
+  temperature    Float? // Temperatura en grados
+  humidity       Float? // Humedad en porcentaje
+  carbonMonoxide Float? // Nivel de Monóxido de Carbono (ppm)
+  createdAt      DateTime  @default(now()) // Fecha de registro de la medición
+  updatedAt      DateTime  @updatedAt // Fecha de actualización de la medición
+}
+
+model Location {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  latitude     Float
+  longitude    Float
+  sensorData   SensorData @relation(fields: [sensorDataId], references: [id])
+  sensorDataId String     @unique @db.ObjectId
+}
+
+model CollectionSchedule {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  containerId String // ID del contenedor
+  scheduledAt DateTime // Fecha y hora de la recolección
+  status      String   @default("Programado") // Estado: Urgente, Programado, Completado
+  createdAt   DateTime @default(now()) // Fecha de creación
+  updatedAt   DateTime @updatedAt // Última fecha de modificación
+}
+
+model CollectionStats {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  containerId String // ID del contenedor
+  day         String // Día de la semana (Lun, Mar, Mié, etc.)
+  collections Int // Número de recolecciones
+  createdAt   DateTime @default(now())
+}
