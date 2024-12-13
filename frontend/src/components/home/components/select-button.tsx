@@ -1,6 +1,5 @@
 import { Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -16,94 +15,41 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useSensor } from "../hooks/use-sensor";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "angular",
-    label: "Angular",
-  },
-  {
-    value: "vue",
-    label: "Vue.js",
-  },
-  {
-    value: "react",
-    label: "React",
-  },
-  {
-    value: "ember",
-    label: "Ember.js",
-  },
-  {
-    value: "gatsby",
-    label: "Gatsby",
-  },
-  {
-    value: "eleventy",
-    label: "Eleventy",
-  },
-  {
-    value: "solid",
-    label: "SolidJS",
-  },
-  {
-    value: "preact",
-    label: "Preact",
-  },
-  {
-    value: "qwik",
-    label: "Qwik",
-  },
-  {
-    value: "alpine",
-    label: "Alpine.js",
-  },
-  {
-    value: "lit",
-    label: "Lit",
-  },
-];
-
-export default function SelectButton() {
+export default function SelectButton({
+  onSelect,
+}: {
+  onSelect: (id: string) => void;
+}) {
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = useState<string>("next.js");
+  const [value, setValue] = useState<string>("");
+
+  const { getSensorDataQuery } = useSensor();
+
+  const containers = Array.isArray(getSensorDataQuery.data)
+    ? getSensorDataQuery.data.map((sensor) => ({
+        value: sensor.id,
+        label: sensor.containerId,
+      }))
+    : [];
+
+  useEffect(() => {
+    if (containers.length > 0 && !value) {
+      setValue(containers[0].value);
+      onSelect(containers[0].value);
+    }
+  }, [containers]);
 
   return (
     <div className="space-y-2 w-[250px]">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            id="select-41"
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between bg-background px-3 font-normal outline-offset-0 hover:bg-background focus-visible:border-ring focus-visible:outline-[3px] focus-visible:outline-ring/20"
-          >
+          <Button variant="outline" className="w-full justify-between">
             <span className={cn("truncate", !value && "text-muted-foreground")}>
               {value
-                ? frameworks.find((framework) => framework.value === value)
-                    ?.label
-                : "Select framework"}
+                ? containers.find((c) => c.value === value)?.label
+                : "Seleccionar contenedor"}
             </span>
             <ChevronDown
               size={16}
@@ -118,22 +64,23 @@ export default function SelectButton() {
           align="start"
         >
           <Command>
-            <CommandInput placeholder="Search framework..." />
+            <CommandInput placeholder="Buscar contenedor..." />
             <CommandList>
               <CommandEmpty>Contenedor no encontrado</CommandEmpty>
               <CommandGroup>
-                {frameworks.map((framework) => (
+                {containers.map((container) => (
                   <CommandItem
-                    key={framework.value}
-                    value={framework.value}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                    key={container.value}
+                    value={container.value}
+                    onSelect={() => {
+                      setValue(container.value);
+                      onSelect(container.value);
                       setOpen(false);
                     }}
                   >
-                    {framework.label}
-                    {value === framework.value && (
-                      <Check size={16} strokeWidth={2} className="ml-auto" />
+                    {container.label}
+                    {value === container.value && (
+                      <Check className="ml-auto" size={16} />
                     )}
                   </CommandItem>
                 ))}

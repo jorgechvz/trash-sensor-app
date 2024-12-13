@@ -29,10 +29,10 @@ export class CollectionScheduleService {
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.collectionSchedule.findUnique({
+  findOne(containerId: string) {
+    return this.prisma.collectionSchedule.findMany({
       where: {
-        id,
+        containerId,
       },
     });
   }

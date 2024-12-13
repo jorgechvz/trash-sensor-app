@@ -33,9 +33,15 @@ export const useAuth = () => {
     return !!getTokenFromLocalStorage();
   };
 
+  const logout = () => {
+    localStorage.removeItem(USER_INFO);
+    navigate("/login");
+  };
+
   return {
     loginMutation,
     registerMutation,
     isAuthenticated,
+    logout
   };
 };

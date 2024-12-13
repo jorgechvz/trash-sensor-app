@@ -42,6 +42,11 @@ export class CollectionScheduleController {
     );
   }
 
+  @Get('stats/:id')
+  getStatsByContainerId(@Param('id') id: string) {
+    return this.collectionScheduleService.getStatsByContainerId(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.collectionScheduleService.findOne(id);

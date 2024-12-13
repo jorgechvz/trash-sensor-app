@@ -1,15 +1,16 @@
-import { useState } from "react";
-
-export default function TrashContainer() {
-  const [nivelLlenado, _] = useState(90);
-
+export default function TrashContainer({
+  nivelLlenado,
+}: {
+  nivelLlenado: number;
+}) {
+  const safeNivelLlenado = nivelLlenado ?? 0;
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="mb-4">
-        <Trash nivelLlenado={nivelLlenado} />
+        <Trash nivelLlenado={safeNivelLlenado} />
       </div>
       <p className="text-center mt-4 text-gray-700 font-semibold">
-        Nivel de llenado: {nivelLlenado}%
+        Nivel de llenado: {safeNivelLlenado}%
       </p>
     </div>
   );
@@ -57,7 +58,6 @@ function Trash({ nivelLlenado }: { nivelLlenado: number }) {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-4 bg-gray-700 rounded-full shadow-sm" />
         </div>
       </div>
-
     </div>
   );
 }

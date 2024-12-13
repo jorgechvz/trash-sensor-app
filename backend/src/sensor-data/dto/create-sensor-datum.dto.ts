@@ -11,8 +11,12 @@ export class GetSensorDataDto {
 }
 
 export class CreateSensorDatumDto {
-  containerId: string;
-  location: Location;
+  containerId?: string;
+  location?: Location;
+  temperature?: number;
+  humidity?: number;
+  carbonMonoxide?: number;
+  fillLevel? : number;
 }
 
 export class Location {
