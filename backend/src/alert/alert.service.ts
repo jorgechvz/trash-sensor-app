@@ -90,8 +90,8 @@ export class AlertService {
     } = data;
 
     const ALERT_THRESHOLDS = {
-      temperature: 50,
-      humidity: 80,
+      temperature: 40,
+      humidity: 70,
       carbonMonoxide: 40,
       fillLevel: 100,
     };
