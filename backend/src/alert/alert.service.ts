@@ -90,10 +90,10 @@ export class AlertService {
     } = data;
 
     const ALERT_THRESHOLDS = {
-      temperature: 40,
-      humidity: 70,
-      carbonMonoxide: 40,
-      fillLevel: 100,
+      temperature: 45,
+      humidity: 40,
+      carbonMonoxide: 45,
+      fillLevel: 90,
     };
 
     const alerts: string[] = [];
